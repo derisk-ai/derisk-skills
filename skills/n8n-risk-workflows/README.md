@@ -351,7 +351,7 @@ const retryCount = $json.retryCount || 0;
 
 if (retryCount >= maxRetries) {
   // Give up and escalate
-  return [{ json: { ...$ json, escalate: true } }];
+  return [{ json: { ...$json, escalate: true } }];
 }
 
 // Wait before retry: 2^retry seconds

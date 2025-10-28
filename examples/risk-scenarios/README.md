@@ -116,7 +116,7 @@ Each scenario includes:
 
 ## Contributing Scenarios
 
-Have a interesting risk scenario from your experience?
+Have an interesting risk scenario from your experience?
 
 1. Anonymize any sensitive information
 2. Follow the scenario template

@@ -3,15 +3,24 @@
 
     Usage: derisk-cli [OPTIONS] COMMAND [ARGS]...
 """
-
 import typer
+import logging
 from typer.core import TyperGroup
 from rich.console import Console
 from rich.text import Text
 from rich.align import Align
 from typer.core import TyperGroup
 
-from ..skills import SKILLS
+from derisk_skills.skills import SKILLS
+
+logging.basicConfig(
+    level=logging.WARNING,
+    encoding="utf-8",
+    format="%(asctime)s | %(name)s | %(levelname)s | %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+
+logger = logging.getLogger("derisk_cli")
 
 BANNER = """
 
@@ -79,6 +88,18 @@ def list_skills():
     typer.echo("Available Skills:")
     for skill in SKILLS:
         typer.echo(f"- {skill['name']}: {skill['description']}")
+
+
+# Create a new Typer app for the "new" command
+new_app = typer.Typer(help="Create a new skill template")
+app.add_typer(new_app, name="new")
+
+@new_app.command("skill")
+def new_skill(name: str):
+    """
+    Create a new skill.
+    """
+    typer.echo(f"Creating a new skill template with name: {name}")
 
 
 def main():

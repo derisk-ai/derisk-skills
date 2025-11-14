@@ -27,4 +27,4 @@ testpypi = { url = "https://test.pypi.org/simple/" }
 packages = ["src/derisk_skills"]
 
 [project.scripts]
-derisk-cli = "derisk_skills.cli:main"
+derisk-cli = "derisk_skills.cli.main:main"

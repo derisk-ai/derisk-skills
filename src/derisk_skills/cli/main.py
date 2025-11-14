@@ -31,7 +31,8 @@ ROOT_PATH = Path(__file__).parent.parent.parent.parent.resolve()
 
 
 BANNER = r"""
-    ____            _      __         _________ 
+
+  ______            _      __         _________ 
    / __ \\___  _____(_)____/ /__      / ____/ (_)
   / / / / _ \\/ ___/ / ___/ //_/_____/ /   / / / 
  / /_/ /  __/ /  / (__  ) ,< /_____/ /___/ / /  
@@ -62,7 +63,7 @@ console = Console()
 
 def show_banner():
     """Display the ASCII art banner."""
-    banner_lines = BANNER.strip().split('\n')
+    banner_lines = BANNER.split('\n')
     colors = ["bright_blue", "blue", "cyan", "bright_cyan", "red", "bright_red"]
 
     styled_banner = Text()
@@ -70,6 +71,7 @@ def show_banner():
         color = colors[i % len(colors)]
         styled_banner.append(line + "\n", style=color)
     
+    console.print(Align.center(styled_banner)) 
     console.print()
 
 @app.command()

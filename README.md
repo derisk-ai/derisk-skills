@@ -47,7 +47,12 @@ Once uv is installed, you can install derisk-skills with:
 > uv tool install derisk-cli
 
 ### Usage
-Run derisk-cli command in the directory you want to work on, then send /setup to setup `derisk-cli` 
+Run derisk-cli command in the directory you want to work on, `derisk-cli --help` 
+
+<p align="left">
+  <img src="./assets/derisk-cli.jpg" width="100%" />
+</p>
+
 
 
 ### Skills(技能)

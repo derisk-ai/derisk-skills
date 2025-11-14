@@ -27,8 +27,7 @@ logging.basicConfig(
 
 logger = logging.getLogger("derisk_cli")
 
-ROOT_PATH = Path(__file__).parent.parent.parent.parent.resolve()
-
+ROOT_PATH = Path.cwd()
 
 BANNER = r"""
 
@@ -121,9 +120,6 @@ def new_skill(name: str):
     copy_template_files(template_path, base_path, name)
     typer.echo(f"New skill {name} created successfully at {base_path} from template.")
 
-
-    typer.echo(f"Creating a new skill template with name: {name}")
-
 @new_app.command("agent")
 def new_agent(name: str):
     """
@@ -148,7 +144,7 @@ def new_agent(name: str):
 
 
 # Registry skills to OpenDeRisk
-@app.command("register")
+@app.command("registry")
 def register():
     """
     Register skills to OpenDeRisk platform.

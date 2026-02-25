@@ -260,3 +260,105 @@ KN43pn8BmS57GQLkQUdP,1647761110,cartservice-1,log_cartservice-service_applicatio
 4. **层级关系**：Pod 部署在特定 Node 上，同一服务的所有 Pod 故障 => 服务级故障
 5. **故障传播**：服务级故障可通过调用链传播到下游服务
 6. **Pod = Container**：在此系统中 Pod 与 Container 概念等同
+
+## 场景脚本使用
+
+### 1. 服务层分析 (analyze_metric.py)
+
+识别异常服务。
+
+```bash
+python scripts/market/analyze_metric.py \
+  --file metric_service.csv \
+  --start "2022-03-20 09:00:00" \
+  --end "2022-03-20 09:30:00"
+```
+
+**参数说明：**
+| 参数 | 说明 |
+|------|------|
+| `--file` | 服务层指标文件路径 |
+| `--start` | 分析开始时间 (UTC+8) |
+| `--end` | 分析结束时间 (UTC+8) |
+
+**输出：** 异常服务列表，按偏离程度排序
+
+### 2. 容器层分析 (analyze_container.py)
+
+定位异常容器和资源瓶颈。
+
+```bash
+python scripts/market/analyze_container.py \
+  --file metric_container.csv \
+  --start "2022-03-20 09:00:00" \
+  --end "2022-03-20 09:30:00" \
+  --component shippingservice
+```
+
+**参数说明：**
+| 参数 | 说明 |
+|------|------|
+| `--file` | 容器层指标文件路径 |
+| `--start` | 分析开始时间 (UTC+8) |
+| `--end` | 分析结束时间 (UTC+8) |
+| `--component` | (可选) 过滤特定服务的容器 |
+
+**输出：** 异常容器及其资源指标详情
+
+### 3. 链路验证 (analyze_trace.py)
+
+确认调用链故障点。
+
+```bash
+python scripts/market/analyze_trace.py \
+  --file trace_span.csv \
+  --time-range "1647738000000,1647739800000" \
+  --errors-by-component
+```
+
+**参数说明：**
+| 参数 | 说明 |
+|------|------|
+| `--file` | 链路追踪文件路径 |
+| `--time-range` | 时间戳范围 (毫秒)，格式: `起始,结束` |
+| `--errors-by-component` | 按组件聚合错误统计 |
+
+**输出：** 错误 span 分布、耗时异常 span
+
+### 4. 日志验证 (analyze_log.py)
+
+确认根因原因。
+
+```bash
+python scripts/market/analyze_log.py \
+  --file log_service.csv \
+  --time-range "1647738000,1647739800" \
+  --component shippingservice \
+  --errors
+```
+
+**参数说明：**
+| 参数 | 说明 |
+|------|------|
+| `--file` | 服务日志文件路径 |
+| `--time-range` | 时间戳范围 (秒)，格式: `起始,结束` |
+| `--component` | (可选) 过滤特定组件日志 |
+| `--errors` | 只显示错误级别日志 |
+
+**输出：** 错误日志摘要、关键错误信息
+
+### 分析流程示例
+
+```bash
+# Step 1: 服务层分析 → 得到异常服务 (如 shippingservice)
+python scripts/market/analyze_metric.py --file metric_service.csv --start "..." --end "..."
+
+# Step 2: 容器层分析 → 得到异常容器和资源问题
+python scripts/market/analyze_container.py --file metric_container.csv --component shippingservice --start "..." --end "..."
+
+# Step 3: 链路验证 → 确认故障传播路径
+python scripts/market/analyze_trace.py --file trace_span.csv --time-range "..."
+
+# Step 4: 日志验证 → 确认根因原因
+python scripts/market/analyze_log.py --file log_service.csv --component shippingservice --errors
+```
